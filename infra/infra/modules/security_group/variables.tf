@@ -27,6 +27,22 @@ variable "description" {
   default     = "Managed by Terraform"
 }
 
+variable "ssh_allowed_cidr" {
+  type        = string
+  description = "CIDR allowed to reach SSH (port 22). No default on purpose (fail-safe default): the caller must explicitly choose who can SSH in instead of silently opening it to 0.0.0.0/0."
+
+  validation {
+    condition     = can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.ssh_allowed_cidr))
+    error_message = "Must be a valid IPv4 CIDR, e.g. 203.0.113.4/32"
+  }
+}
+
+variable "http_allowed_cidr" {
+  type        = string
+  description = "CIDR allowed to reach HTTP (port 80)"
+  default     = "0.0.0.0/0"
+}
+
 variable "ingress_rules" {
   # Each rule becomes its own aws_vpc_security_group_ingress_rule resource,
   # keyed by map key rather than inline blocks on aws_security_group -
@@ -39,23 +55,8 @@ variable "ingress_rules" {
     cidr_ipv4   = optional(string)
     cidr_ipv6   = optional(string)
   }))
-  description = "Map of ingress rules, keyed by a unique rule name"
-  default = {
-    ssh = {
-      description = "Allow SSH"
-      from_port   = 22
-      to_port     = 22
-      ip_protocol = "tcp"
-      cidr_ipv4   = "0.0.0.0/0"
-    }
-    http = {
-      description = "Allow HTTP"
-      from_port   = 80
-      to_port     = 80
-      ip_protocol = "tcp"
-      cidr_ipv4   = "0.0.0.0/0"
-    }
-  }
+  description = "Extra ingress rules beyond the built-in ssh/http ones, keyed by a unique rule name"
+  default     = {}
 }
 
 variable "egress_rules" {

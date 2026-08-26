@@ -1,5 +1,22 @@
 locals {
   prefix = "${var.username}-${var.environment}"
+
+  ingress_rules = merge({
+    http = {
+      description = "Allow HTTP"
+      from_port   = 80
+      to_port     = 80
+      ip_protocol = "tcp"
+      cidr_ipv4   = var.http_allowed_cidr
+    }
+    ssh = {
+      description = "Allow SSH"
+      from_port   = 22
+      to_port     = 22
+      ip_protocol = "tcp"
+      cidr_ipv4   = var.ssh_allowed_cidr
+    }
+  }, var.ingress_rules)
 }
 
 resource "aws_security_group" "this" {
@@ -13,7 +30,7 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "this" {
-  for_each = var.ingress_rules
+  for_each = local.ingress_rules
 
   security_group_id = aws_security_group.this.id
   description       = each.value.description
