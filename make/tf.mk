@@ -1,4 +1,4 @@
-.PHONY: tf.fmt.ci tf.fmt tf.init tf.init.lock tf.validate
+.PHONY: tf.fmt.ci tf.fmt tf.init tf.init.lock tf.validate tf.plan tf.apply tf.destroy tf.output
 tf.fmt:
 	@terraform -chdir=$(INFRA_DIR) fmt -recursive -diff
 tf.fmt.ci:
@@ -19,3 +19,15 @@ tf.validate: tf.init
 		echo "$(INFO_COLOR)==> terraform validate: $$d$(RESET_COLOR)"; \
 		terraform -chdir=$$d validate; \
 	done
+
+tf.plan: tf.init.lock
+	@terraform -chdir=$(TF_ENV_DIR) plan
+
+tf.apply: tf.init.lock
+	@terraform -chdir=$(TF_ENV_DIR) apply
+
+tf.destroy:
+	@terraform -chdir=$(TF_ENV_DIR) destroy
+
+tf.output:
+	@terraform -chdir=$(TF_ENV_DIR) output
