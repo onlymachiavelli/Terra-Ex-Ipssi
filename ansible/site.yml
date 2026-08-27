@@ -1,0 +1,7 @@
+---
+- name: Provision the dev web server
+  hosts: dev
+  become: true
+  roles:
+    - install_nginx
+    - harden_server
