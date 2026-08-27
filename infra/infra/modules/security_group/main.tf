@@ -8,6 +8,7 @@ locals {
       to_port     = 80
       ip_protocol = "tcp"
       cidr_ipv4   = var.http_allowed_cidr
+      cidr_ipv6   = null
     }
     ssh = {
       description = "Allow SSH"
@@ -15,6 +16,7 @@ locals {
       to_port     = 22
       ip_protocol = "tcp"
       cidr_ipv4   = var.ssh_allowed_cidr
+      cidr_ipv6   = null
     }
   }, var.ingress_rules)
 }
