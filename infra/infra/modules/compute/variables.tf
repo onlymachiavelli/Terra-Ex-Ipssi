@@ -15,23 +15,32 @@ variable "environment" {
     error_message = "Environment of dev staging and prod"
   }
 }
-variable "instance_ami" {
+
+variable "resource_group_name" {
   type        = string
-  description = "AMI of EC2 instance"
-  #default = "value"
+  description = "Resource group the VM is created in"
 }
 
-variable "instance_type" {
+variable "location" {
   type        = string
-  description = "Default instance"
+  description = "Azure region the VM is created in"
 }
 
 variable "subnet_id" {
-  type = string
+  type        = string
+  description = "Subnet the VM's NIC is attached to"
 }
 
-variable "sg_ids" {
-  type = list(string)
+variable "vm_size" {
+  type        = string
+  description = "Azure VM size"
+  default     = "Standard_B1s"
+}
+
+variable "admin_username" {
+  type        = string
+  description = "Admin username on the VM (also used as the ansible_user)"
+  default     = "ubuntu"
 }
 
 variable "public_key" {
@@ -41,4 +50,24 @@ variable "public_key" {
 variable "has_public_ip" {
   type    = bool
   default = false #fail-safe default
+}
+
+variable "image_publisher" {
+  type    = string
+  default = "Canonical"
+}
+
+variable "image_offer" {
+  type    = string
+  default = "ubuntu-24_04-lts"
+}
+
+variable "image_sku" {
+  type    = string
+  default = "server"
+}
+
+variable "image_version" {
+  type    = string
+  default = "latest"
 }

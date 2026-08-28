@@ -16,15 +16,19 @@ variable "environment" {
   }
 }
 
-variable "vpc_id" {
+variable "resource_group_name" {
   type        = string
-  description = "VPC where the security group is created"
+  description = "Resource group the NSG is created in"
 }
 
-variable "description" {
+variable "location" {
   type        = string
-  description = "Security group description"
-  default     = "Managed by Terraform"
+  description = "Azure region the NSG is created in"
+}
+
+variable "subnet_id" {
+  type        = string
+  description = "Subnet the NSG is associated with"
 }
 
 variable "ssh_allowed_cidr" {
@@ -41,39 +45,4 @@ variable "http_allowed_cidr" {
   type        = string
   description = "CIDR allowed to reach HTTP (port 80)"
   default     = "0.0.0.0/0"
-}
-
-variable "ingress_rules" {
-  # Each rule becomes its own aws_vpc_security_group_ingress_rule resource,
-  # keyed by map key rather than inline blocks on aws_security_group -
-  # HashiCorp warns against mixing inline rules with these resources.
-  type = map(object({
-    description = optional(string, "")
-    from_port   = optional(number)
-    to_port     = optional(number)
-    ip_protocol = string
-    cidr_ipv4   = optional(string)
-    cidr_ipv6   = optional(string)
-  }))
-  description = "Extra ingress rules beyond the built-in ssh/http ones, keyed by a unique rule name"
-  default     = {}
-}
-
-variable "egress_rules" {
-  type = map(object({
-    description = optional(string, "")
-    from_port   = optional(number)
-    to_port     = optional(number)
-    ip_protocol = string
-    cidr_ipv4   = optional(string)
-    cidr_ipv6   = optional(string)
-  }))
-  description = "Map of egress rules, keyed by a unique rule name"
-  default = {
-    allow_all_outbound = {
-      description = "Allow all outbound traffic"
-      ip_protocol = "-1"
-      cidr_ipv4   = "0.0.0.0/0"
-    }
-  }
 }

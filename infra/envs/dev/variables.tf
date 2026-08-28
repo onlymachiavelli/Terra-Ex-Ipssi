@@ -1,7 +1,7 @@
-variable "aws_region" {
+variable "location" {
   type        = string
-  description = "AWS region to deploy into"
-  default     = "us-east-1"
+  description = "Azure region to deploy into"
+  default     = "swedencentral"
 }
 
 variable "username" {
@@ -15,16 +15,10 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "vpc_cidr" {
+variable "vnet_cidr" {
   type        = string
-  description = "CIDR block for the VPC"
+  description = "CIDR block for the virtual network"
   default     = "10.0.0.0/16"
-}
-
-variable "availability_zone" {
-  type        = string
-  description = "Availability zone for the subnet"
-  default     = "us-east-1a"
 }
 
 variable "subnet_cidr" {
@@ -35,7 +29,7 @@ variable "subnet_cidr" {
 
 variable "ssh_allowed_cidr" {
   type        = string
-  description = "CIDR allowed to reach SSH (port 22), enforced at both the security group and network ACL layers. No default on purpose (fail-safe default): must be chosen explicitly."
+  description = "CIDR allowed to reach SSH (port 22), enforced at the network security group. No default on purpose (fail-safe default): must be chosen explicitly."
 
   validation {
     condition     = can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", var.ssh_allowed_cidr))
@@ -49,24 +43,19 @@ variable "http_allowed_cidr" {
   default     = "0.0.0.0/0"
 }
 
-variable "instance_ami" {
+variable "vm_size" {
   type        = string
-  description = "AMI of EC2 instance"
-}
-
-variable "instance_type" {
-  type        = string
-  description = "EC2 instance type"
-  default     = "t3.micro"
+  description = "Azure VM size"
+  default     = "Standard_D2s_v3"
 }
 
 variable "public_key" {
   type        = string
-  description = "SSH public key to install on the instance"
+  description = "SSH public key to install on the VM"
 }
 
 variable "has_public_ip" {
   type        = bool
-  description = "Whether the instance gets a public IP"
+  description = "Whether the VM gets a public IP"
   default     = false # fail-safe default
 }

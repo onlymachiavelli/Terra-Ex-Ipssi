@@ -1,24 +1,19 @@
 output "id" {
-  description = "ID of the EC2 instance"
-  value       = aws_instance.this.id
-}
-
-output "arn" {
-  description = "ARN of the EC2 instance"
-  value       = aws_instance.this.arn
+  description = "ID of the virtual machine"
+  value       = azurerm_linux_virtual_machine.this.id
 }
 
 output "private_ip" {
-  description = "Private IP address of the EC2 instance"
-  value       = aws_instance.this.private_ip
+  description = "Private IP address of the VM"
+  value       = azurerm_network_interface.this.private_ip_address
 }
 
 output "public_ip" {
-  description = "Public IP address of the EC2 instance"
-  value       = aws_instance.this.public_ip
+  description = "Public IP address of the VM"
+  value       = var.has_public_ip ? azurerm_public_ip.this[0].ip_address : null
 }
 
-output "key_name" {
-  description = "Name of the key pair attached to the instance"
-  value       = aws_key_pair.this_keypair.key_name
+output "admin_username" {
+  description = "Admin username on the VM"
+  value       = var.admin_username
 }
